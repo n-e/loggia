@@ -697,6 +697,23 @@ set_spec_date_format (void)
   }
 }
 
+/* Get the enumerated value given a string.
+ *
+ * On error, -1 is returned.
+ * On success, the enumerated module value is returned. */
+int
+str2enum (const GEnum map[], int len, const char *str)
+{
+  int i;
+
+  for (i = 0; i < len; ++i) {
+    if (!strcmp (str, map[i].str))
+      return map[i].idx;
+  }
+
+  return -1;
+}
+
 /* Attempt to set the date format given a command line option
  * argument. The supplied optarg can be either an actual format string
  * or the enumerated value such as VCOMBINED */

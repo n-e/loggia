@@ -44,8 +44,7 @@ xmalloc (size_t size)
 {
   void *ptr;
 
-  if ((ptr = malloc (size)) == NULL)
-    FATAL ("Unable to allocate memory - failed.");
+  ptr = malloc (size);
 
   return (ptr);
 }
@@ -69,8 +68,7 @@ xcalloc (size_t nmemb, size_t size)
 {
   void *ptr;
 
-  if ((ptr = calloc (nmemb, size)) == NULL)
-    FATAL ("Unable to calloc memory - failed.");
+  ptr = calloc (nmemb, size);
 
   return (ptr);
 }
@@ -81,8 +79,7 @@ xrealloc (void *oldptr, size_t size)
 {
   void *newptr;
 
-  if ((newptr = realloc (oldptr, size)) == NULL)
-    FATAL ("Unable to reallocate memory - failed");
+  newptr = realloc (oldptr, size);
 
   return (newptr);
 }

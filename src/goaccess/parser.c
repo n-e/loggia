@@ -69,7 +69,8 @@
 #include "parser.h"
 
 #include "browsers.h"
-#include "goaccess.h"
+// #include "goaccess.h"
+#include "labels.h"
 #include "error.h"
 #include "opesys.h"
 #include "util.h"
@@ -1501,16 +1502,12 @@ valid_line (char *line)
 static void
 lock_spinner (void)
 {
-  if (parsing_spinner != NULL && parsing_spinner->state == SPN_RUN)
-    pthread_mutex_lock (&parsing_spinner->mutex);
 }
 
 /* Determine if we need to unlock the mutex. */
 static void
 unlock_spinner (void)
 {
-  if (parsing_spinner != NULL && parsing_spinner->state == SPN_RUN)
-    pthread_mutex_unlock (&parsing_spinner->mutex);
 }
 
 /* Ignore request's query string. e.g.,
@@ -2467,6 +2464,7 @@ map_log (GLogItem * logitem, const GParse * parse, GModule module)
 
 /* Process a log line and set the data into the corresponding data
  * structure. */
+#if 0
 static void
 process_log (GLogItem * logitem)
 {
@@ -2496,6 +2494,7 @@ process_log (GLogItem * logitem)
     map_log (logitem, parse, module);
   }
 }
+#endif
 
 /* Process a line from the log and store it accordingly taking into
  * account multiple parsing options prior to setting data into the

@@ -46,6 +46,15 @@
 #include "error.h"
 #include "xmalloc.h"
 
+/* Calculate a percentage.
+ *
+ * The percentage is returned. */
+float
+get_percentage (unsigned long long total, unsigned long long hit)
+{
+  return (total == 0 ? 0 : (((float) hit) / total) * 100);
+}
+
 /* Allocate memory for a new GMetrics instance.
  *
  * On success, the newly allocated GMetrics is returned . */

@@ -50,6 +50,8 @@
 #include <sys/types.h>
 #include <time.h>
 
+#define SYSCONFDIR "/XXXXYYYY"
+
 char *alloc_string (const char *str);
 char *char_repeat (int n, char c);
 char *char_replace (char *str, char o, char n);

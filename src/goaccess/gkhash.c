@@ -269,13 +269,13 @@ init_storage (void)
   ht_hostnames = (khash_t (ss32) *) new_ss32_ht ();
   ht_unique_keys = (khash_t (si32) *) new_si32_ht ();
 
-  gkh_storage = new_gkhstorage (TOTAL_MODULES);
+  /* gkh_storage = new_gkhstorage (TOTAL_MODULES);
   FOREACH_MODULE (idx, module_list) {
     module = module_list[idx];
 
     gkh_storage[module].module = module;
     init_tables (module);
-  }
+  } */
 }
 
 static void
@@ -334,9 +334,9 @@ free_storage (void)
   if (!gkh_storage)
     return;
 
-  FOREACH_MODULE (idx, module_list) {
+  /* FOREACH_MODULE (idx, module_list) {
     free_metrics (module_list[idx]);
-  }
+  } */
   free (gkh_storage);
 }
 
@@ -1551,7 +1551,7 @@ parse_raw_num_data (GModule module)
     raw_data->idx++;
   }
 
-  sort_raw_num_data (raw_data, raw_data->idx);
+  // sort_raw_num_data (raw_data, raw_data->idx);
 
   return raw_data;
 }
@@ -1584,7 +1584,7 @@ parse_raw_str_data (GModule module)
     raw_data->idx++;
   }
 
-  sort_raw_str_data (raw_data, raw_data->idx);
+  // sort_raw_str_data (raw_data, raw_data->idx);
 
   return raw_data;
 }

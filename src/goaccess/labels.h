@@ -32,7 +32,7 @@
 
 #include <libintl.h>
 
-#define _(String) dgettext (PACKAGE , String)
+#define _(String) (String)
 #define gettext_noop(String) String
 #define N_(String) gettext_noop (String)
 

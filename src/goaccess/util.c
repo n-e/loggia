@@ -533,6 +533,18 @@ str_to_time (const char *str, const char *fmt, struct tm *tm)
   return 0;
 }
 
+/* Determine if the given date format is a timestamp.
+ *
+ * On error, 0 is returned.
+ * On success, 1 is returned. */
+int
+has_timestamp (const char *fmt)
+{
+  if (strcmp ("%s", fmt) == 0 || strcmp ("%f", fmt) == 0)
+    return 1;
+  return 0;
+}
+
 /* Convert a date from one format to another and store inot the given buffer.
  *
  * On error, 1 is returned.
@@ -544,7 +556,7 @@ convert_date (char *res, const char *data, const char *from, const char *to,
   struct tm tm;
 
   memset (&tm, 0, sizeof (tm));
-  timestamp = time (NULL);
+  time_t timestamp = time (NULL);
   now_tm = localtime (&timestamp);
 
   if (str_to_time (data, from, &tm) != 0)

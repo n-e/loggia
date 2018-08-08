@@ -421,6 +421,7 @@ get_sort_field_key (GSortField field)
  *
  * On error, function returns.
  * On success, panel metrics are sorted. */
+#if 0
 void
 set_initial_sort (const char *smod, const char *sfield, const char *ssort)
 {
@@ -487,6 +488,7 @@ parse_initial_sort (void)
     set_initial_sort (module, field, order);
   }
 }
+#endif
 
 /* Apply user defined sort */
 void

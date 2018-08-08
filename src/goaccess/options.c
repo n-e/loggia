@@ -644,7 +644,7 @@ parse_long_opt (const char *name, const char *oarg)
 
   /* default config file --dwf */
   if (!strcmp ("dcf", name)) {
-    display_default_config_file ();
+    // display_default_config_file ();
     exit (EXIT_SUCCESS);
   }
 }
@@ -783,14 +783,14 @@ read_option_args (int argc, char **argv)
         conf.append_protocol = 1;
       break;
     case 'V':
-      display_version ();
+      // display_version ();
       exit (EXIT_SUCCESS);
       break;
     case 0:
       parse_long_opt (long_opts[idx].name, optarg);
       break;
     case 's':
-      display_storage ();
+      // display_storage ();
       exit (EXIT_SUCCESS);
     case '?':
       exit (EXIT_FAILURE);

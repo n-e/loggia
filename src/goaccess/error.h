@@ -49,7 +49,6 @@
 #define TRACE_SIZE 128
 
 #define FATAL(fmt, ...) do {                                                  \
-  (void) endwin ();                                                           \
   fprintf (stderr, "\nGoAccess - version %s - %s %s\n", GO_VERSION, __DATE__, \
            __TIME__);                                                         \
   fprintf (stderr, "Config file: %s\n", conf.iconfigfile ?: NO_CONFIG_FILE);  \

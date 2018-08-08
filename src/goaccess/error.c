@@ -40,6 +40,7 @@
 #endif
 #include <sys/types.h>
 #include <unistd.h>
+#include <stdarg.h>
 
 #include "error.h"
 #include "labels.h"
@@ -154,7 +155,6 @@ sigsegv_handler (int sig)
   void *trace_stack[TRACE_SIZE];
 #endif
 
-  (void) endwin ();
   fprintf (fp, "\n");
   fprintf (fp, "==%d== GoAccess %s crashed by Sig %d\n", pid, GO_VERSION, sig);
   fprintf (fp, "==%d==\n", pid);
