@@ -51,6 +51,7 @@ static int nargc = 0;
 static GEnum LOGTYPE[] = {
   {"COMBINED"     , COMBINED}     ,
   {"VCOMBINED"    , VCOMBINED}    ,
+  {"VCOMBINEDNOP" , VCOMBINEDNOP} ,
   {"COMMON"       , COMMON}       ,
   {"VCOMMON"      , VCOMMON}      ,
   {"W3C"          , W3C}          ,
@@ -64,6 +65,7 @@ static GEnum LOGTYPE[] = {
 static const GPreConfLog logs = {
   "%h %^[%d:%t %^] \"%r\" %s %b \"%R\" \"%u\"",                 /* NCSA */
   "%v:%^ %h %^[%d:%t %^] \"%r\" %s %b \"%R\" \"%u\"",           /* NCSA + VHost  */
+  "%v %h %^[%d:%t %^] \"%r\" %s %b \"%R\" \"%u\"",           /* NCSA + VHost No Port  */
   "%h %^[%d:%t %^] \"%r\" %s %b",                               /* CLF */
   "%v:%^ %h %^[%d:%t %^] \"%r\" %s %b",                         /* CLF+VHost */
   "%d %t %^ %m %U %q %^ %^ %h %u %R %s %^ %^ %L",               /* W3C */
@@ -393,6 +395,9 @@ get_selected_format_str (size_t idx)
   case VCOMBINED:
     fmt = alloc_string (logs.vcombined);
     break;
+  case VCOMBINEDNOP:
+    fmt = alloc_string (logs.vcombinednop);
+    break;
   case W3C:
     fmt = alloc_string (logs.w3c);
     break;
@@ -430,6 +435,7 @@ get_selected_date_str (size_t idx)
   case VCOMMON:
   case COMBINED:
   case VCOMBINED:
+  case VCOMBINEDNOP:
   case AWSS3:
     fmt = alloc_string (dates.apache);
     break;
@@ -464,6 +470,7 @@ get_selected_time_str (size_t idx)
   case COMBINED:
   case COMMON:
   case VCOMBINED:
+  case VCOMBINEDNOP:
   case VCOMMON:
   case W3C:
   case AWSS3:

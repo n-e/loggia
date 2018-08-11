@@ -100,24 +100,22 @@ int main(int argc, char const *argv[])
     glog = init_log ();
     int ret;
 
+    read_option_args(argc, argv);
+    set_spec_date_format();
+
     rows = kh_init(rowh);
     cols = kh_init(str_int);
 
     int term_width = get_term_width();
 
-    set_date_format_str("%d/%b/%Y");
-    set_time_format_str("%H:%M:%S");
-    set_log_format_str("%v %h %^[%d:%t %^] \"%r\" %s %b \"%R\" \"%u\" %T");
-    set_spec_date_format();
-
     FILE *fp = fopen("data/access.log.1","r");
-    add_dash_filename();
+    conf.read_stdin = 1;
+    conf.filenames[conf.filenames_idx++] = "-";
     glog->pipe = fp;
     
     if ((ret = parse_log (&glog, NULL, 0))) {
         goto clean;
     }
-
 
 
     khint_t k;

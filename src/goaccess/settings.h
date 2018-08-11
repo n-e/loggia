@@ -47,6 +47,7 @@ typedef enum LOGTYPE
 {
   COMBINED,
   VCOMBINED,
+  VCOMBINEDNOP,
   COMMON,
   VCOMMON,
   W3C,
@@ -79,6 +80,7 @@ typedef struct GPreConfLog_
 {
   const char *combined;
   const char *vcombined;
+  const char *vcombinednop;
   const char *common;
   const char *vcommon;
   const char *w3c;
