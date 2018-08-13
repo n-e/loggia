@@ -69,7 +69,8 @@ process_log (GLogItem * logitem)
 
     char *row_key = create_key(logitem, myconf.rowspec);
     char *col_key = create_key(logitem, myconf.colspec);
-    // char *filter_key = create_key(logitem, myconf.filterspec);
+    if (!match_filterspec(logitem, myconf.filterspec))
+        return;
 
     // Filter
     // if(!strcmp())

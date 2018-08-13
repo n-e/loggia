@@ -69,3 +69,41 @@ char *create_key(GLogItem *logitem, char *spec) {
 
     return key;
 }
+
+int match_filterspec(GLogItem *logitem, char *spec) {
+    if (*spec == 0)
+        return 1;
+
+    // Parse results
+    char key[20] = {0};
+    int op = 0;
+    char val[200] = {0};
+
+    // Parsing
+    int cursor = 0;
+    while (spec[cursor] >= 'a' && spec[cursor] <='z' && spec[cursor]!=0)
+        cursor++;
+    strncpy(key,spec,cursor); key[cursor < 20 ? cursor:20]= 0;
+
+    if (spec[cursor] == '=' && spec[cursor]!=0) {
+        op = 1;
+        cursor++;
+    }
+
+    int start = cursor;
+    while (spec[cursor]!=0)
+        cursor++;
+    strncpy(val,&spec[start],cursor-start); key[cursor < 200 ? cursor:200]= 0;
+
+
+    field_t *f = find_field(key);
+    if (!f) {
+        fprintf(stderr,"Invalid key \"%s\".\n\nValid values are:\n",key);
+        print_fields();
+        exit(1);
+    }
+
+    char *item = getstr(logitem,f->offset);
+
+    return !strcmp(item,val);
+}
