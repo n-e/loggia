@@ -7,25 +7,28 @@ typedef struct {
     char *label;
     int offset; // offset of the field in glogitem
     char *descr;
+    char *prepend; // characters to prepend in help
 } field_t;
 
 field_t fields[] = {
-    {"agent", offsetof(GLogItem,agent),"Full User Agent String"},
-    // browser, browser type, contient, country
-    {"date", offsetof(GLogItem,date),"Date"},
-    {"host", offsetof(GLogItem,host),"Client Host (usually its IP)"},
+    {"agent", offsetof(GLogItem,agent),"Full User Agent String",""},
+    {"browser", offsetof(GLogItem,browser),"Full Browser String (e.g.: Chrome/68.0.3440...)","  "},
+    {"browser_type", offsetof(GLogItem,browser_type),"Browser type (e.g. Chrome, Crawlers...)","  "},
+    // continent, country
+    {"date", offsetof(GLogItem,date),"Date",""},
+    {"host", offsetof(GLogItem,host),"Client Host (usually its IP)",""},
     // keyphrase
-    {"method", offsetof(GLogItem,method),"HTTP Method (GET, POST...)"},
+    {"method", offsetof(GLogItem,method),"HTTP Method (GET, POST...)",""},
     // os, os_type
-    {"protocol", offsetof(GLogItem,protocol),"Protocol (HTTP/1.1...)"},
+    {"protocol", offsetof(GLogItem,protocol),"Protocol (HTTP/1.1...)",""},
     // qstr
-    {"referer", offsetof(GLogItem,ref),"Referer"},
-    {"req", offsetof(GLogItem,req),"Request (/plip/plop)"},
+    {"referer", offsetof(GLogItem,ref),"Referer",""},
+    {"req", offsetof(GLogItem,req),"Request (/plip/plop)",""},
     // req_key
-    {"status", offsetof(GLogItem,status),"Status Code (404...)"},
-    {"time", offsetof(GLogItem,time),"Time"},
+    {"status", offsetof(GLogItem,status),"Status Code (404...)",""},
+    {"time", offsetof(GLogItem,time),"Time",""},
     // uniq_key
-    {"vhost", offsetof(GLogItem,vhost),"Virtual Host"},
+    {"vhost", offsetof(GLogItem,vhost),"Virtual Host",""},
     // userid, + uninteresting ints
     {0, 0, 0}
 };
@@ -44,7 +47,13 @@ static field_t *find_field (char *label) {
 
 void print_fields() {
     for(int i = 0; fields[i].label != 0; i++) {
-        fprintf(stderr,"\t%-10s %s\n",fields[i].label,fields[i].descr);
+        fprintf(
+            stderr,
+            "\t%s%-*s %s\n",
+            fields[i].prepend,
+            15-strlen(fields[i].prepend),
+            fields[i].label,
+            fields[i].descr);
     }
 }
 
@@ -81,7 +90,7 @@ int match_filterspec(GLogItem *logitem, char *spec) {
 
     // Parsing
     int cursor = 0;
-    while (spec[cursor] >= 'a' && spec[cursor] <='z' && spec[cursor]!=0)
+    while (((spec[cursor] >= 'a' && spec[cursor] <='z') || spec[cursor]== '_' ) && spec[cursor]!=0)
         cursor++;
     strncpy(key,spec,cursor); key[cursor < 20 ? cursor:20]= 0;
 

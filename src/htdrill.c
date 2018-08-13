@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include "goaccess/parser.h"
 #include "goaccess/options.h"
+#include "goaccess/browsers.h"
 #include "khash.h"
 #include "ksort.h"
 #include "goaccess/settings.h"
@@ -59,6 +60,19 @@ int digits(long long x)
         x < 10000000000 ? 10 : 0;
 }
 
+// Add calculated data to the logitem
+static void fill_logitem(GLogItem *logitem) {
+    char *agent = NULL;
+    char browser_type[BROWSER_TYPE_LEN] = "";
+
+    if (logitem->agent == NULL || *logitem->agent == '\0')
+        return;
+
+    agent = strdup (logitem->agent);
+    logitem->browser = verify_browser (agent, browser_type);
+    logitem->browser_type = strdup (browser_type);
+}
+
 // Callback that is called by the goaccess parser
 // each time a log item (= valid line) is encountered
 void
@@ -66,6 +80,8 @@ process_log (GLogItem * logitem)
 {
     int empty;
     khint_t k;
+
+    fill_logitem(logitem);
 
     char *row_key = create_key(logitem, myconf.rowspec);
     char *col_key = create_key(logitem, myconf.colspec);
@@ -105,7 +121,7 @@ process_log (GLogItem * logitem)
 }
 
 
-int main(int argc, char const *argv[])
+int main(int argc, char *argv[])
 {
     int i,j;
     glog = init_log ();
@@ -131,7 +147,7 @@ int main(int argc, char const *argv[])
 
     khint_t k;
     const char *row, *col;
-    int cnt,total_cnt;
+    int total_cnt;
     row_t row_val;
 
     // Sort columns
