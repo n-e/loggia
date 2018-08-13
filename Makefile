@@ -7,7 +7,7 @@ CFLAGS=-g -Wall # -D_FORTIFY_SOURCE=2 -O2
 %.o: %.c
 	$(CC) $(CFLAGS) -c -o $@ $<
 
-htdrill: src/htdrill.o src/options.o src/spec_parser.o $(GAMOD)
+htdrill: src/htdrill.o src/options.o src/spec_parser.o src/table_print.o $(GAMOD)
 	$(CC) $(CFLAGS) -o $@ $^
 
 .PHONY: clean

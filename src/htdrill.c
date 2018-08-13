@@ -1,6 +1,4 @@
 #include <stdio.h>
-#include <sys/ioctl.h>
-#include <errno.h>
 #include "goaccess/parser.h"
 #include "goaccess/options.h"
 #include "khash.h"
@@ -8,6 +6,7 @@
 #include "goaccess/settings.h"
 #include "htdrill.h"
 #include "spec_parser.h"
+#include "table_print.h"
 
 typedef struct {
     const char *name;
@@ -45,6 +44,20 @@ KSORT_INIT(row, rowa_t, col_gt)
 khash_t(rowh) *rows; // all the rows, each row contains the columns that have data in it
 khash_t(str_int) *cols; // all the columns
 
+int digits(long long x)
+{
+    x < 0 ? x = -x : 0;
+    return x < 10 ? 1 :
+        x < 100 ? 2 :
+        x < 1000 ? 3 :
+        x < 10000 ? 4 :
+        x < 100000 ? 5 :
+        x < 1000000 ? 6 :
+        x < 10000000 ? 7 :
+        x < 100000000 ? 8 :
+        x < 1000000000 ? 9 :
+        x < 10000000000 ? 10 : 0;
+}
 
 // Callback that is called by the goaccess parser
 // each time a log item (= valid line) is encountered
@@ -90,22 +103,6 @@ process_log (GLogItem * logitem)
         kh_value(cols, k)++;
 }
 
-int get_term_width() {
-    struct winsize ws;
-    ioctl(0, TIOCGWINSZ, &ws); 
-    if (errno > 0)
-        return -1;
-    else
-        return ws.ws_col;
-}
-
-void print_ruler(int w0, int w, int n) {
-    int i;
-    w = w+1; // account for the field separator
-    for (i = 0 ; i < w0 + w*n; i++)
-        putchar((i - w0) % w == 0 && i >= w0 ? '+' : '-');
-    putchar('\n');
-}
 
 int main(int argc, char const *argv[])
 {
@@ -120,7 +117,6 @@ int main(int argc, char const *argv[])
     rows = kh_init(rowh);
     cols = kh_init(str_int);
 
-    int term_width = get_term_width();
 
     FILE *fp = fopen("data/access.log.1","r");
     conf.read_stdin = 1;
@@ -165,44 +161,68 @@ int main(int argc, char const *argv[])
     ks_mergesort(row,rows_array_len,rows_array,0);
     // Print headers
 
-    int h_width = 0, h2_width = 10;
+    TableSpec table_spec;
+    table_spec.w0 = 0;
+    table_spec.w = 0;
+    table_spec.minw = 0;
+    table_spec.ncols = kh_size(cols);
+
+    // Set w0
     kh_foreach(rows, row, row_val, {
         int len = strlen(row);
-        h_width = h_width < len ? len : h_width;
+        table_spec.w0 = table_spec.w0 < len ? len : table_spec.w0;
     })
 
-    printf("%*s",h_width,"");
-    for (i=0; i < cols_array_len; i++) {
-        printf("|%*s",h2_width,cols_array[i].name);
+    // Set w
+    for(int i = 0; i < cols_array_len; i++) {
+        int len = strlen(cols_array[i].name);
+        table_spec.w = table_spec.w < len ? len : table_spec.w;
+    }
+
+    k = kh_get(str_int,rows_array[0].cols,cols_array[0].name);
+    table_spec.minw = digits(kh_value(rows_array[0].cols,k));
+    if (table_spec.w < table_spec.minw)
+        table_spec.w = table_spec.minw;
+    
+    int original_ncols = table_spec.ncols;
+    crop_to_termwidth(&table_spec);
+
+    print_row_header(table_spec,"");
+    int max = original_ncols == table_spec.ncols ? table_spec.ncols : table_spec.ncols-1;
+    for (i=0; i < max; i++) {
+        print_row_value(table_spec,cols_array[i].name);
+    }
+    if (original_ncols > table_spec.ncols) {
+        print_row_value(table_spec,"...");
     }
     printf("\n");
 
-    print_ruler(h_width,h2_width,kh_size(cols)+1);
+    print_ruler(table_spec);
 
     // Print table contents
     for (j=0; j < rows_array_len; j++) {
         rowa_t row_j = rows_array[j];
 
-        printf("%-*s", h_width, row_j.name);
-        for (i=0; i < cols_array_len; i++) {
+        print_row_header(table_spec,row_j.name);
+        for (i=0; i < max; i++) {
             k = kh_get(str_int,row_j.cols,cols_array[i].name);
             if (k != kh_end(row_j.cols))
-                printf("|%*d",h2_width,kh_value(row_j.cols,k));
+                print_row_value_int(table_spec,kh_value(row_j.cols,k));
             else
-                printf("|%*s",h2_width,"");
+                print_row_value(table_spec,"");
         }
-        printf("|\033[1m%*d\033[0m",h2_width, row_j.total);
+        // printf("|\033[1m%*d\033[0m",h2_width, row_j.total);
         printf("\n");
     }
 
     // print_ruler(h_width,h2_width,kh_size(cols));
 
     // print totals
-    printf("%*s",h_width,"");
+    /*printf("%*s",h_width,"");
     for (i=0; i < cols_array_len; i++) {
         printf("|\033[1m%*d\033[0m",h2_width, cols_array[i].total);
     }
-    printf("\n");
+    printf("\n");*/
 
     clean:
     /* unable to process valid data */
