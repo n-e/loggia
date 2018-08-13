@@ -51,7 +51,7 @@ void print_fields() {
             stderr,
             "\t%s%-*s %s\n",
             fields[i].prepend,
-            15-strlen(fields[i].prepend),
+            15-(int)strlen(fields[i].prepend),
             fields[i].label,
             fields[i].descr);
     }
@@ -85,7 +85,7 @@ int match_filterspec(GLogItem *logitem, char *spec) {
 
     // Parse results
     char key[20] = {0};
-    int op = 0;
+    int op = 0; // 1 : =, 2: <>
     char val[200] = {0};
 
     // Parsing
@@ -94,9 +94,11 @@ int match_filterspec(GLogItem *logitem, char *spec) {
         cursor++;
     strncpy(key,spec,cursor); key[cursor < 20 ? cursor:20]= 0;
 
-    if (spec[cursor] == '=' && spec[cursor]!=0) {
-        op = 1;
+    if ((spec[cursor] == '=' || !strncmp(&spec[cursor],"<>",2)) && spec[cursor]!=0) {
+        op = spec[cursor] == '=' ? 1 : 2;
         cursor++;
+        if (op == 2)
+            cursor++;
     }
 
     int start = cursor;
@@ -114,5 +116,8 @@ int match_filterspec(GLogItem *logitem, char *spec) {
 
     char *item = getstr(logitem,f->offset);
 
-    return !strcmp(item,val);
+    if (op == 1)
+        return !strcmp(item,val);
+    else
+        return strcmp(item,val);
 }

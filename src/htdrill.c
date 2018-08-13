@@ -176,6 +176,12 @@ int main(int argc, char *argv[])
     })
 
     ks_mergesort(row,rows_array_len,rows_array,0);
+
+    if (rows_array_len == 0) {
+        printf("(0 results)\n");
+        exit(0);
+    }
+
     // Print headers
 
     TableSpec table_spec;
