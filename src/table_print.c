@@ -60,6 +60,7 @@ static int get_row_width(TableSpec s) {
 #define MIN(a,b) ((a) < (b) ? a : b)
 void crop_to_termwidth(TableSpec *s) {
     int term_width = get_term_width()-1;
+    int initial_w0 = s->w0;
     int rw; 
     if (term_width < 20) term_width = 20;
     
@@ -69,7 +70,7 @@ void crop_to_termwidth(TableSpec *s) {
     retifok()
     if (s->w0 > term_width/3) s->w0 = MAX(term_width / 3,10);
     retifok()
-    while (s->w > s->minw+3) {
+    while (s->w > 15) {
         s->w--;
         retifok()
     }
@@ -87,7 +88,7 @@ void crop_to_termwidth(TableSpec *s) {
         retifok()
     }
     ret:
-    while((rw = get_row_width(*s))<term_width)
+    while((rw = get_row_width(*s))<term_width && s->w0 < initial_w0)
         s->w0++;
     return;
 }
