@@ -4,6 +4,7 @@
 #include <stdio.h>
 
 #include "goaccess/settings.h"
+#include "htdrill.h"
 
 static char short_options[] = "hf:Vt:d:";
 
@@ -105,7 +106,11 @@ read_option_args (int argc, char *const *argv)
         }
     }
 
-    for (idx = optind; idx < argc; ++idx) {
-        //
-    }
+    idx = optind;
+    if (idx < argc)
+        myconf.rowspec = argv[idx++];
+    if (idx < argc)
+        myconf.colspec = argv[idx++];
+    if (idx < argc)
+        myconf.filterspec = argv[idx++];
 }

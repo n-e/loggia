@@ -6,6 +6,8 @@
 #include "khash.h"
 #include "ksort.h"
 #include "goaccess/settings.h"
+#include "htdrill.h"
+#include "spec_parser.h"
 
 typedef struct {
     const char *name;
@@ -14,12 +16,15 @@ typedef struct {
 #define col_gt(a, b) ((a).total > (b).total)
 KSORT_INIT(col, col_t, col_gt)
 
+// goaccess conf (for the parser)
 GConf conf = {
     .append_method = 1,
     .append_protocol = 1,
     .hl_header = 1,
     .num_tests = 10,
 };
+
+MyConf myconf = {"", "", ""};
 
 GLog *glog;
 
@@ -40,6 +45,7 @@ KSORT_INIT(row, rowa_t, col_gt)
 khash_t(rowh) *rows; // all the rows, each row contains the columns that have data in it
 khash_t(str_int) *cols; // all the columns
 
+
 // Callback that is called by the goaccess parser
 // each time a log item (= valid line) is encountered
 void
@@ -48,10 +54,17 @@ process_log (GLogItem * logitem)
     int empty;
     khint_t k;
 
+    char *row_key = create_key(logitem, myconf.rowspec);
+    char *col_key = create_key(logitem, myconf.colspec);
+    // char *filter_key = create_key(logitem, myconf.filterspec);
+
+    // Filter
+    // if(!strcmp())
+
     // Update the row and the columns for a row
-    k = kh_put(rowh,rows,logitem->vhost,&empty);
+    k = kh_put(rowh,rows,row_key,&empty);
     if (empty) {
-        kh_key(rows, k) = strdup(logitem->vhost);
+        // kh_key(rows, k) = strdup(logitem->vhost);
         kh_value(rows, k).cols = kh_init(str_int);
         kh_value(rows, k).total = 1;
     }
@@ -59,18 +72,18 @@ process_log (GLogItem * logitem)
         kh_value(rows, k).total++;
 
     khash_t(str_int) *row_cols = kh_value(rows, k).cols;
-    k = kh_put(str_int,row_cols,logitem->status,&empty);
+    k = kh_put(str_int,row_cols,col_key,&empty);
     if (empty) {
-        kh_key(row_cols, k) = strdup(logitem->status);
+        // kh_key(row_cols, k) = strdup(logitem->status);
         kh_value(row_cols, k) = 1;
     }
     else
         kh_value(row_cols, k)++;
     
     // Update the global columns object
-    k = kh_put(str_int,cols,logitem->status,&empty);
+    k = kh_put(str_int,cols,col_key,&empty);
     if (empty) {
-        kh_key(cols, k) = strdup(logitem->status);
+        // kh_key(cols, k) = strdup(logitem->status);
         kh_value(cols, k) = 1;
     }
     else
@@ -102,6 +115,7 @@ int main(int argc, char const *argv[])
 
     read_option_args(argc, argv);
     set_spec_date_format();
+    // printf("%s %s %s",myconf.rowspec,myconf.colspec,myconf.filterspec);
 
     rows = kh_init(rowh);
     cols = kh_init(str_int);

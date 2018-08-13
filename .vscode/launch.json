@@ -9,7 +9,7 @@
             "type": "cppdbg",
             "request": "launch",
             "program": "${workspaceFolder}/htdrill",
-            "args": ["-f", "VCOMBINEDNOP"],
+            "args": ["-f", "VCOMBINEDNOP","vhost","vhost"],
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}",
             "environment": [],

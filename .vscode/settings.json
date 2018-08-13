@@ -6,6 +6,7 @@
         "ostream": "c",
         "system_error": "c",
         "type_traits": "c",
-        "typeinfo": "c"
+        "typeinfo": "c",
+        "parser.h": "c"
     }
 }

@@ -45,6 +45,7 @@
 #define SPEC_TOKN_INV   0x3
 #define SPEC_SFMT_MIS   0x4
 
+#include <stdio.h>
 #include "commons.h"
 
 /* Log properties. Note: This is per line parsed */
