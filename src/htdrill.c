@@ -62,6 +62,7 @@ int digits(long long x)
 
 // Add calculated data to the logitem
 static void fill_logitem(GLogItem *logitem) {
+    // browser and browser_type
     char *agent = NULL;
     char browser_type[BROWSER_TYPE_LEN] = "";
 
@@ -71,6 +72,12 @@ static void fill_logitem(GLogItem *logitem) {
     agent = strdup (logitem->agent);
     logitem->browser = verify_browser (agent, browser_type);
     logitem->browser_type = strdup (browser_type);
+
+    // url (we reuse userid for this)
+    int len = strlen(logitem->req) + strlen(logitem->vhost);
+    logitem->userid = malloc(len+1);
+    strcpy(logitem->userid, logitem->vhost);
+    strcat(logitem->userid,logitem->req);
 }
 
 // Callback that is called by the goaccess parser

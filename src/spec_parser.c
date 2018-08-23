@@ -29,6 +29,7 @@ field_t fields[] = {
     {"time", offsetof(GLogItem,time),"Time",""},
     // uniq_key
     {"vhost", offsetof(GLogItem,vhost),"Virtual Host",""},
+    {"url", offsetof(GLogItem,userid),"vhost + req",""}, // CAUTION: user_id is reused as url
     // userid, + uninteresting ints
     {0, 0, 0}
 };
