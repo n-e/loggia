@@ -9,7 +9,7 @@
             "type": "cppdbg",
             "request": "launch",
             "program": "${workspaceFolder}/htdrill",
-            "args": ["-f", "VCOMBINEDNOP","agent","method","'browser_type<>Crawlers'"],
+            "args": ["-f", "VCOMBINEDNOP","url","status"],
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}",
             "environment": [],

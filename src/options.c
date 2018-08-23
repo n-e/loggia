@@ -4,7 +4,7 @@
 #include <stdio.h>
 
 #include "goaccess/settings.h"
-#include "htdrill.h"
+#include "loggia.h"
 
 static char short_options[] = "hf:Vt:d:";
 
@@ -23,27 +23,23 @@ cmd_help (void)
 {
     printf (
     "Usage: "
-    "htdrill [ options ... ] [ rows ] [ cols ] [ filter ]\n\n"
+    "loggia -l log-format [ rows ] [ cols ] [ filter ]\n\n"
     "\n");
 
     printf (
+    "  -f <logfile>\n"
     /* Log & Date Format Options */
-    "Log & Date Format Options\n\n"
-    "  -f, --log-format=<logformat>    - Specify log format. Inner quotes need to be\n"
-    "                                    escaped, or use single quotes.\n"
-    "  -d, --date-format=<dateformat>      - Specify log date format. e.g., %%d/%%b/%%Y\n"
-    "  -t, --time-format=<timeformat>      - Specify log time format. e.g., %%H:%%M:%%S\n\n"
+    "  -l, --log-format=<logformat>\n"
+    "  -d, --date-format=<dateformat>\n"
+    "  -t, --time-format=<timeformat>\n\n"
 
     /* Other Options */
-    "Other Options\n\n"
-    "  -h, --help                      - This help.\n"
-    "  -V, --version                   - Display version information and exit.\n"
+    "  -h, --help                      This help.\n"
+    "  -V, --version                   Display version information and exit.\n"
     "\n"
-
-    " `man goaccess`.\n\n"
-    ": http://goaccess.io\n"
-    "GoAccess Copyright (C) 2009-2017 by Gerardo Orellana"
-    "\n\n"
+    "loggia <https://github.com/n-e/loggia>\n"
+    "Copyright (C) 2018 Nicolas Even"
+    "\n"
     );
     exit(1);
 }
@@ -80,7 +76,7 @@ read_option_args (int argc, char *const *argv)
             break;
 
         switch (o) {
-            case 'f':
+            case 'l':
                 set_log_format_str (optarg);
                 break;
             case 't':

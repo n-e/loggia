@@ -5,7 +5,7 @@
 #include "khash.h"
 #include "ksort.h"
 #include "goaccess/settings.h"
-#include "htdrill.h"
+#include "loggia.h"
 #include "spec_parser.h"
 #include "table_print.h"
 
