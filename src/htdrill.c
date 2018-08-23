@@ -156,6 +156,7 @@ int main(int argc, char *argv[])
     const char *row, *col;
     int total_cnt;
     row_t row_val;
+    int col_val;
 
     // Sort columns
     int cols_array_len = kh_size(cols);
@@ -203,14 +204,22 @@ int main(int argc, char *argv[])
         table_spec.w0 = table_spec.w0 < len ? len : table_spec.w0;
     })
 
-    // Set w
+    // Set w to the length of the largest column title
     for(int i = 0; i < cols_array_len; i++) {
         int len = strlen(cols_array[i].name);
         table_spec.w = table_spec.w < len ? len : table_spec.w;
     }
 
-    k = kh_get(str_int,rows_array[0].cols,cols_array[0].name);
-    table_spec.minw = digits(kh_value(rows_array[0].cols,k));
+    // set minw to the length of the longest value in the table
+    int max_val = 0;
+    for(int i = 0; i < rows_array_len; i++) {
+        kh_foreach(rows_array[i].cols, col, col_val, {
+            if (col_val > max_val)
+                max_val = col_val;
+        })
+    }
+    table_spec.minw = digits(max_val);
+
     if (table_spec.w < table_spec.minw)
         table_spec.w = table_spec.minw;
     
