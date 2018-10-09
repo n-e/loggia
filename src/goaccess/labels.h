@@ -30,7 +30,7 @@
 #ifndef LABELS_H_INCLUDED
 #define LABELS_H_INCLUDED
 
-#include <libintl.h>
+// #include <libintl.h>
 
 #define _(String) (String)
 #define gettext_noop(String) String
