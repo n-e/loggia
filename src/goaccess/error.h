@@ -48,6 +48,7 @@
 
 #define TRACE_SIZE 128
 
+#if 0
 #define FATAL(fmt, ...) do {                                                  \
   fprintf (stderr, "\nGoAccess - version %s - %s %s\n", GO_VERSION, __DATE__, \
            __TIME__);                                                         \
@@ -59,6 +60,13 @@
   fprintf (stderr, "\n\n");                                                   \
   LOG_DEBUG ((fmt, ##__VA_ARGS__));                                           \
   exit(EXIT_FAILURE);                                                         \
+} while (0)
+#endif
+
+#define FATAL(fmt, ...) do { \
+  char buf[200];                                                 \
+  snprintf(buf,200,fmt,##__VA_ARGS__); \
+  cmd_help(buf); \
 } while (0)
 
 #ifdef DEBUG

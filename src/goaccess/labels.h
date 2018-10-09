@@ -258,11 +258,11 @@
 #define ERR_FORMAT_HEADER              \
   _("Format Errors - Verify your log/date/time format")
 #define ERR_FORMAT_NO_DATE_FMT         \
-  _("No date format was found on your conf file.")
+  _("No date format was found.")
 #define ERR_FORMAT_NO_LOG_FMT          \
-  _("No log format was found on your conf file.")
+  _("No log format was found.")
 #define ERR_FORMAT_NO_TIME_FMT         \
-  _("No time format was found on your conf file.")
+  _("No time format was found.")
 #define ERR_NODEF_CONF_FILE            \
   _("No default config file found.")
 #define ERR_NODEF_CONF_FILE_DESC       \

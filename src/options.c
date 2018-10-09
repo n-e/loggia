@@ -30,7 +30,7 @@
 #include "goaccess/settings.h"
 #include "loggia.h"
 
-static char short_options[] = "hf:Vt:d:";
+static char short_options[] = "hf:Vt:d:l:";
 
 struct option long_opts[] = {
   {"help"                 , no_argument       , 0 , 'h' } ,
@@ -43,11 +43,17 @@ struct option long_opts[] = {
 
 /* Command line help. */
 void
-cmd_help (void)
+cmd_help (const char *err_msg)
 {
+    if (err_msg)
+        printf (
+            "%s\n\n",
+            err_msg
+        );
+
     printf (
     "Usage: "
-    "loggia -l log-format [ rows ] [ cols ] [ filter ]\n\n"
+    "loggia -l log-format -f log-file [ rows ] [ cols ] [ filter ]\n\n"
     "\n");
 
     printf (
@@ -61,7 +67,7 @@ cmd_help (void)
     "  -h, --help                      This help.\n"
     "  -V, --version                   Display version information and exit.\n"
     "\n"
-    "loggia <https://github.com/n-e/loggia>\n"
+    "loggia <https://github.com/n-e/loggia> "
     "Copyright (C) 2018 Nicolas Even"
     "\n"
     );
@@ -100,6 +106,9 @@ read_option_args (int argc, char *const *argv)
             break;
 
         switch (o) {
+            case 'f':
+                conf.filenames[conf.filenames_idx++] = strdup(optarg);
+                break;
             case 'l':
                 set_log_format_str (optarg);
                 break;
@@ -110,7 +119,7 @@ read_option_args (int argc, char *const *argv)
                 set_date_format_str (optarg);
                 break;
             case 'h':
-                cmd_help ();
+                cmd_help (NULL);
                 break;
             case 'V':
                 // display_version ();

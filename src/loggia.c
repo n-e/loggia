@@ -166,10 +166,13 @@ int main(int argc, char *argv[])
     cols = kh_init(str_int);
 
 
-    FILE *fp = fopen("data/access.log.1","r");
-    conf.read_stdin = 1;
-    conf.filenames[conf.filenames_idx++] = "-";
-    glog->pipe = fp;
+    if (conf.filenames_idx == 0 || !strcmp(conf.filenames[0], "-")) {
+        FILE *fp = stdin;
+        conf.read_stdin = 1;
+        conf.filenames[conf.filenames_idx++] = "-";
+        glog->pipe = fp;
+    }
+
     
     if ((ret = parse_log (&glog, NULL, 0))) {
         goto clean;
