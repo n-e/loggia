@@ -47,7 +47,7 @@ cmd_help (const char *err_msg)
 {
     if (err_msg)
         printf (
-            "%s\n\n",
+            "\x1B[1m%s\x1B[0m\n\n",
             err_msg
         );
 
@@ -60,6 +60,8 @@ cmd_help (const char *err_msg)
     "  -f <logfile>\n"
     /* Log & Date Format Options */
     "  -l, --log-format=<logformat>\n"
+    "          Common formats: COMMON, VCOMMON, COMBINED, VCOMBINED\n"
+    "                          W3C, SQUID, CLOUDFRONT, AWSS3\n"
     "  -d, --date-format=<dateformat>\n"
     "  -t, --time-format=<timeformat>\n\n"
 

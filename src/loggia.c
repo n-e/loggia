@@ -24,7 +24,7 @@
 
 #include <stdio.h>
 #include "goaccess/parser.h"
-#include "goaccess/options.h"
+// #include "goaccess/options.h"
 #include "goaccess/browsers.h"
 #include "khash.h"
 #include "ksort.h"
@@ -32,6 +32,7 @@
 #include "loggia.h"
 #include "spec_parser.h"
 #include "table_print.h"
+#include "options.h"
 
 typedef struct {
     const char *name;
@@ -165,6 +166,15 @@ int main(int argc, char *argv[])
     rows = kh_init(rowh);
     cols = kh_init(str_int);
 
+    if (!conf.log_format) {
+        cmd_help("You need to input the log format (e.g. -l VCOMBINED)");
+        return 1;
+    }
+
+    if (conf.filenames_idx == 0) {
+        cmd_help("You need to input the log file (e.g. -f access.log or -f -)");
+        return 1;
+    }
 
     if (conf.filenames_idx == 0 || !strcmp(conf.filenames[0], "-")) {
         FILE *fp = stdin;
