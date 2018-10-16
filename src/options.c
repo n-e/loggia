@@ -29,6 +29,7 @@
 
 #include "goaccess/settings.h"
 #include "loggia.h"
+#include "colors.h"
 
 static char short_options[] = "hf:Vt:d:l:";
 
@@ -47,7 +48,7 @@ cmd_help (const char *err_msg)
 {
     if (err_msg)
         printf (
-            "\x1B[1m%s\x1B[0m\n\n",
+            TBOLD TRED "%s\n\n" TRESET,
             err_msg
         );
 

@@ -33,6 +33,7 @@
 #include "spec_parser.h"
 #include "table_print.h"
 #include "options.h"
+#include "colors.h"
 
 typedef struct {
     const char *name;
@@ -152,42 +153,8 @@ process_log (GLogItem * logitem)
         kh_value(cols, k)++;
 }
 
-
-int main(int argc, char *argv[])
-{
+void print_table() {
     int i,j;
-    glog = init_log ();
-    int ret;
-
-    read_option_args(argc, argv);
-    set_spec_date_format();
-    // printf("%s %s %s",myconf.rowspec,myconf.colspec,myconf.filterspec);
-
-    rows = kh_init(rowh);
-    cols = kh_init(str_int);
-
-    if (!conf.log_format) {
-        cmd_help("You need to input the log format (e.g. -l VCOMBINED)");
-        return 1;
-    }
-
-    if (conf.filenames_idx == 0) {
-        cmd_help("You need to input the log file (e.g. -f access.log or -f -)");
-        return 1;
-    }
-
-    if (conf.filenames_idx == 0 || !strcmp(conf.filenames[0], "-")) {
-        FILE *fp = stdin;
-        conf.read_stdin = 1;
-        conf.filenames[conf.filenames_idx++] = "-";
-        glog->pipe = fp;
-    }
-
-    
-    if ((ret = parse_log (&glog, NULL, 0))) {
-        goto clean;
-    }
-
 
     khint_t k;
     const char *row, *col;
@@ -263,6 +230,7 @@ int main(int argc, char *argv[])
     int original_ncols = table_spec.ncols;
     crop_to_termwidth(&table_spec);
 
+    // Print table header
     print_row_header(table_spec,"");
     int max = original_ncols == table_spec.ncols ? table_spec.ncols : table_spec.ncols-1;
     for (i=0; i < max; i++) {
@@ -299,6 +267,53 @@ int main(int argc, char *argv[])
         printf("|\033[1m%*d\033[0m",h2_width, cols_array[i].total);
     }
     printf("\n");*/
+}
+
+int main(int argc, char *argv[])
+{
+    glog = init_log ();
+    int ret;
+
+    read_option_args(argc, argv);
+    set_spec_date_format();
+    // printf("%s %s %s",myconf.rowspec,myconf.colspec,myconf.filterspec);
+
+    rows = kh_init(rowh);
+    cols = kh_init(str_int);
+
+    if (!conf.log_format) {
+        cmd_help("You need to input the log format (e.g. -l VCOMBINED)");
+        return 1;
+    }
+
+    if (conf.filenames_idx == 0) {
+        cmd_help("You need to input the log file (e.g. -f access.log or -f -)");
+        return 1;
+    }
+
+    if (conf.filenames_idx == 0 || !strcmp(conf.filenames[0], "-")) {
+        FILE *fp = stdin;
+        conf.read_stdin = 1;
+        conf.filenames[conf.filenames_idx++] = "-";
+        glog->pipe = fp;
+    }
+
+    
+    if ((ret = parse_log (&glog, NULL, 0))) {
+        goto clean;
+    }
+
+    if (*myconf.rowspec == '\0' && *myconf.colspec == '\0' && *myconf.filterspec == '\0') {
+        row_t row = kh_val(rows,kh_begin(rows));
+        int col = kh_val(row.cols,kh_begin(row.cols));
+
+        fprintf(stderr,TBOLD "%d rows\n\n" TRESET, col);
+        fprintf(stderr, "Allowed values for rows/cols/filter:\n");
+        print_fields();
+    }
+    else
+        print_table();
+    
 
     clean:
     /* unable to process valid data */
